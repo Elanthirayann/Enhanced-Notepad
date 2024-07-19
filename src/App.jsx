@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import ReactMarkdown from "react-markdown"; // Importing react-markdown
+import ReactMarkdown from "react-markdown";
 import { FaSave, FaUndo, FaRedo, FaTrash, FaSun, FaMoon } from "react-icons/fa";
 import { FiFileText } from "react-icons/fi";
 import { ImMenu } from "react-icons/im";
-
+import showdown from "showdown";
 import "./App.css";
 
 function App() {
@@ -14,29 +14,26 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const inputRef = useRef(null);
+  const isUndoRedoRef = useRef(false);
 
   const handleChange = (e) => {
     setMarkdown(e.target.value);
+    if (!isUndoRedoRef.current) {
+      const newHistory = history.slice(0, historyIndex + 1);
+      newHistory.push(e.target.value);
+      setHistory(newHistory);
+      setHistoryIndex(newHistory.length - 1);
+    }
+    isUndoRedoRef.current = false;
   };
 
   useEffect(() => {
     inputRef.current.focus();
   }, []);
 
-  useEffect(() => {
-    if (historyIndex === -1) {
-      setHistory([markdown]);
-      setHistoryIndex(0);
-    } else {
-      const newHistory = history.slice(0, historyIndex + 1);
-      newHistory.push(markdown);
-      setHistory(newHistory);
-      setHistoryIndex(newHistory.length - 1);
-    }
-  }, [markdown]);
-
   const handleUndo = () => {
     if (historyIndex > 0) {
+      isUndoRedoRef.current = true;
       setHistoryIndex(historyIndex - 1);
       setMarkdown(history[historyIndex - 1]);
     }
@@ -44,6 +41,7 @@ function App() {
 
   const handleRedo = () => {
     if (historyIndex < history.length - 1) {
+      isUndoRedoRef.current = true;
       setHistoryIndex(historyIndex + 1);
       setMarkdown(history[historyIndex + 1]);
     }
@@ -65,7 +63,8 @@ function App() {
   };
 
   const handleSaveHTML = () => {
-    const htmlContent = `<html><head><title>Markdown Preview</title></head><body>${markdown}</body></html>`;
+    const converter = new showdown.Converter();
+    const htmlContent = converter.makeHtml(markdown);
     const blob = new Blob([htmlContent], { type: "text/html" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -81,7 +80,7 @@ function App() {
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
 
-    if (!file) return; // No file selected
+    if (!file) return;
 
     const reader = new FileReader();
 

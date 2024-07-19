@@ -1,5 +1,3 @@
-/* App.css */
-
 html, body {
   font-family: 'Roboto', sans-serif;
   background-color: #747373;
@@ -56,7 +54,7 @@ button {
 
 button:hover {
   background-color: #0056b3; 
-  transform: translateY(-7px); 
+  transform: translateY(-5px); 
 }
 
 /* Hamburger menu styles */
@@ -91,7 +89,6 @@ button:hover {
 .hamburger.active span:nth-child(3) {
   transform: rotate(-45deg) translate(5px, -5px);
 }
-
 
 .preview table {
   width: 100%;
@@ -138,7 +135,7 @@ button:hover {
 textarea {
   flex: 1;
   overflow: auto; /* Allow scrolling */
-  padding: 10px;
+  padding: 20px 10px 10px 10px; /* Added padding to the top */
   border-right: 1px solid #9d9d9d; /* Optional: border between editor and preview */
   height: 100%; /* Make sure it takes full height */
   width: 50%; /* Make editor take half of the container */
@@ -147,13 +144,13 @@ textarea {
   border: 1px solid rgb(117, 117, 117);
   border-radius: 5px;
   font-size: 15px;
-  
 }
 
 .preview {
   flex: 1;
   overflow: auto; /* Allow scrolling */
   padding: 10px;
+   padding: 20px 10px 10px 10px;
   height: 100%; /* Make sure it takes full height */
   width: 50%; /* Make preview take half of the container */
   background-color: #ebebeb;
@@ -178,7 +175,7 @@ textarea {
     flex-direction: column;
   }
 
-   textarea {
+  textarea {
     border-right: none; 
     border-bottom: 1px solid #ddd; 
     height: 50%; 
@@ -190,7 +187,7 @@ textarea {
     height: 50%; 
     width: 100%; 
   }
-  }
+}
 
 /* Dark theme styles */
 .app.dark {
@@ -207,8 +204,6 @@ textarea {
   background-color: #333; 
   color: white;
 }
-
-
 
 .app.dark .preview {
   background-color: #444; 
