@@ -1,21 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { marked } from "marked";
+import ReactMarkdown from "react-markdown"; // Importing react-markdown
 import { FaSave, FaUndo, FaRedo, FaTrash, FaSun, FaMoon } from "react-icons/fa";
 import { FiFileText } from "react-icons/fi";
 import { ImMenu } from "react-icons/im";
 
 import "./App.css";
-
-// Configure marked to support GFM, which includes tables
-marked.setOptions({
-  gfm: true,
-  breaks: true,
-  tables: true,
-});
-
-const parseMarkdown = (markdown) => {
-  return { __html: marked(markdown) };
-};
 
 function App() {
   const [markdown, setMarkdown] = useState("");
@@ -76,7 +65,7 @@ function App() {
   };
 
   const handleSaveHTML = () => {
-    const htmlContent = marked(markdown);
+    const htmlContent = `<html><head><title>Markdown Preview</title></head><body>${markdown}</body></html>`;
     const blob = new Blob([htmlContent], { type: "text/html" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -89,22 +78,21 @@ function App() {
     setIsDarkTheme(!isDarkTheme);
   };
 
-const handleFileUpload = (e) => {
-  const file = e.target.files[0];
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
 
-  if (!file) return; // No file selected
+    if (!file) return; // No file selected
 
-  const reader = new FileReader();
+    const reader = new FileReader();
 
-  reader.onload = (event) => {
-    const fileContent = event.target.result;
-    const markdownWithText = `${markdown}\n\n${fileContent}`;
-    setMarkdown(markdownWithText);
+    reader.onload = (event) => {
+      const fileContent = event.target.result;
+      const markdownWithText = `${markdown}\n\n${fileContent}`;
+      setMarkdown(markdownWithText);
+    };
+
+    reader.readAsText(file);
   };
-
-  reader.readAsText(file);
-};
-
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -222,10 +210,7 @@ const handleFileUpload = (e) => {
           placeholder="Start writing your markdown..."
           onClick={closeSidebar}
         />
-        <div
-          className="preview"
-          dangerouslySetInnerHTML={parseMarkdown(markdown)}
-        />
+        <ReactMarkdown className="preview" children={markdown} />
       </div>
     </div>
   );
